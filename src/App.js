@@ -1,4 +1,5 @@
 import "./App.css";
+import { useState } from "react";
 
 function App() {
   return (
@@ -10,33 +11,51 @@ function App() {
 }
 
 function TipCalculator() {
+  const [bill, setBill] = useState("");
+  const [percentage1, setPercentage1] = useState(0);
+  const [percentage2, setPercentage2] = useState(0);
+
+  const tip = bill * ((percentage1 + percentage2) / 2 / 100);
+
   return (
     <div>
-      <BillInput />
-      <SelectPercentage>How do you rate the service?</SelectPercentage>
-      <SelectPercentage>
+      <BillInput bill={bill} onSetBill={setBill} />
+      {/* Your Percentage */}
+      <SelectPercentage percentage={percentage1} onSelect={setPercentage1}>
+        How do you rate the service?
+      </SelectPercentage>
+      {/* Friend's Percentage */}
+      <SelectPercentage percentage={percentage2} onSelect={setPercentage2}>
         How does your friend rate the service?
       </SelectPercentage>
-      <Output />
+      <Output bill={bill} />
       <Reset />
     </div>
   );
 }
 
-function BillInput() {
+function BillInput({ bill, onSetBill }) {
   return (
     <div>
       <label>How much is the bill?</label>
-      <input type="text" placeholder="total bill"></input>
+      <input
+        type="text"
+        placeholder="Bill total"
+        value={bill}
+        onChange={(e) => onSetBill(Number(e.target.value))}
+      ></input>
     </div>
   );
 }
 
-function SelectPercentage({ children }) {
+function SelectPercentage({ children, percentage, onSelect }) {
   return (
     <div>
       <label>{children}</label>
-      <select>
+      <select
+        value={percentage}
+        onChange={(e) => onSelect(Number(e.target.value))}
+      >
         <option value="0">It was not good (0%)</option>
         <option value="5">It was okay (5%)</option>
         <option value="10">It was good (10%)</option>
@@ -46,8 +65,8 @@ function SelectPercentage({ children }) {
   );
 }
 
-function Output() {
-  <h3>You pay X (A + B)</h3>;
+function Output({ bill, tip }) {
+  return <h3>You pay X (${bill} + $B tip)</h3>;
 }
 
 function Reset() {
